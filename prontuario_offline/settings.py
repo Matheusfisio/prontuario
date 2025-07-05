@@ -10,6 +10,8 @@ STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
 
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
 SECRET_KEY = 'django-insecure-1234567890'
 
 DEBUG = True
