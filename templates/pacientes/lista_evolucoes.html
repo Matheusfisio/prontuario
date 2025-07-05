@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Evoluções de {{ paciente.nome }}</h2>
+
+<a href="{% url 'evolucoes:nova_evolucao' paciente.id %}">Nova Evolução</a>
+
+<ul>
+    {% for evolucao in evolucoes %}
+        <li>
+            <strong>{{ evolucao.data }}</strong>: {{ evolucao.texto }}<br>
+            <small>Por {{ evolucao.fisioterapeuta.get_full_name }}</small>
+        </li>
+    {% empty %}
+        <li>Nenhuma evolução registrada.</li>
+    {% endfor %}
+</ul>
+{% endblock %}

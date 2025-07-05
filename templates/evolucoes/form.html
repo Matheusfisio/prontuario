@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="container mt-4">
+    <h2>
+      {% if form.instance.pk %}
+        Editar Evolução
+      {% else %}
+        Nova Evolução para {{ paciente.nome }}
+      {% endif %}
+    </h2>
+
+    <form method="post">
+      {% csrf_token %}
+      {{ form.non_field_errors }}
+      <div class="mb-3">
+        <label for="descricao" class="form-label">Descrição</label>
+        {{ form.descricao|add_class:"form-control" }}
+        {{ form.descricao.errors }}
+      </div>
+
+      <button type="submit" class="btn btn-primary">
+        {% if form.instance.pk %}Salvar alterações{% else %}Salvar{% endif %}
+      </button>
+      <a href="{% url 'lista_evolucoes' paciente.id %}" class="btn btn-secondary">Cancelar</a>
+    </form>
+  </div>
+{% endblock %}

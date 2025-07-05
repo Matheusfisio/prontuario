@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Evoluções de {{ paciente.nome }}</h1>
+<ul>
+  {% for evolucao in evolucoes %}
+    <li>
+      {{ evolucao.criado_em|date:"d/m/Y H:i" }} — 
+      {% if evolucao.original %}<em>(Editado)</em>{% endif %}
+      <a href="{% url 'editar_evolucao' evolucao.id %}">Editar</a>
+    </li>
+  {% endfor %}
+</ul>
+{% endblock %}
