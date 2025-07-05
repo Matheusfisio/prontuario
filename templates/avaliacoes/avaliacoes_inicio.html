@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+
+{% block page_title %}Avaliações{% endblock %}
+
+{% block content %}
+<style>
+  body {
+    background-color: #f5f5fa;
+    font-family: Arial, sans-serif;
+  }
+
+  .container {
+    width: 90%;
+    max-width: 1000px;
+    margin: 30px auto;
+  }
+
+  .top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+
+  .search-bar {
+    flex-grow: 1;
+    text-align: center;
+  }
+
+  .search-bar input {
+    width: 60%;
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+  }
+
+  .card {
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    padding: 20px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  th {
+    text-align: left;
+    color: #555;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #ddd;
+  }
+
+  td {
+    padding: 12px 0;
+    border-bottom: 1px solid #eee;
+  }
+
+  .actions {
+    display: flex;
+    gap: 10px;
+  }
+
+  .btn {
+    padding: 6px 12px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 14px;
+    color: white;
+  }
+
+  .btn-avaliacao {
+    background-color: #007BFF;
+  }
+</style>
+
+<div class="container">
+  <div class="top-bar">
+    <div class="search-bar">
+      <input type="text" id="searchInput" placeholder="Pesquisar paciente...">
+    </div>
+  </div>
+
+  <div class="card">
+    <table>
+      <thead>
+        <tr>
+          <th>Nome</th>
+          <th>Diagnóstico</th>
+          <th>Fisioterapeuta</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody id="pacienteTable">
+        {% for paciente in pacientes %}
+        <tr>
+          <td>{{ paciente.nome }}</td>
+          <td>{{ paciente.diagnostico }}</td>
+          <td>{{ paciente.fisioterapeuta }}</td>
+          <td class="actions">
+  <a href="{% url 'avaliacoes:listar_avaliacoes' paciente.pk %}" class="btn btn-avaliacao">Ver Avaliações</a>
+  <a href="{% url 'avaliacoes:nova_avaliacao' paciente.pk %}" class="btn btn-avaliacao" style="background-color: #28a745;">Nova Avaliação</a>
+</td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="4">Nenhum paciente disponível.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+  const searchInput = document.getElementById('searchInput');
+  const tableRows = document.querySelectorAll('#pacienteTable tr');
+
+  searchInput.addEventListener('input', function () {
+    const searchText = this.value.toLowerCase();
+
+    tableRows.forEach(row => {
+      const nome = row.querySelector('td')?.textContent.toLowerCase();
+      row.style.display = nome.includes(searchText) ? '' : 'none';
+    });
+  });
+</script>
+{% endblock %}

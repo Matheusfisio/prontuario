@@ -1,0 +1,32 @@
+<!-- base.html -->
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Prontuário{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <header>
+        <h1>{% block page_title %}Dashboard{% endblock %}</h1>
+
+
+        {% if user.is_authenticated %}
+            <div style="float: right;">
+                Olá, {{ user.username }}
+                <button onclick="history.back()">🔙 Voltar</button>
+                <a href="{% url 'logout' %}">
+                    <button>🚪 Sair</button>
+                </a>
+            </div>
+        {% endif %}
+    </header>
+    
+    <main>
+        {% block content %}
+        <!-- Conteúdo específico da página -->
+        {% endblock %}
+    </main>
+</body>
+</html>

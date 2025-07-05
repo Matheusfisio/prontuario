@@ -1,0 +1,36 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Editor de Avaliação</title>
+    <link rel="stylesheet" href="https://formbuilder.online/assets/css/form-builder.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://formbuilder.online/assets/js/form-builder.min.js"></script>
+</head>
+<body>
+    <h2>Monte seu formulário de avaliação</h2>
+    <div id="form-builder"></div>
+    <button id="salvar">Salvar</button>
+
+    <script>
+        const formBuilder = $('#form-builder').formBuilder();
+
+        $('#salvar').on('click', function () {
+            const estrutura = formBuilder.actions.getData('json');
+            fetch('', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify({
+                    nome: "Avaliação personalizada",
+                    estrutura: JSON.parse(estrutura)
+                })
+            }).then(res => res.json()).then(data => {
+                alert("Formulário salvo com sucesso!");
+            });
+        });
+    </script>
+</body>
+</html>

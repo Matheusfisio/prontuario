@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+
+
+<div class="dashboard-grid">
+    <div class="dashboard-card">
+        <img src="{% static 'icons/pacientes.svg' %}" alt="Pacientes" />
+        <h3>Pacientes</h3>
+        <p>Gerencie todos os pacientes cadastrados.</p>
+        <a href="/pacientes/">Acessar</a>
+    </div>
+
+    <div class="dashboard-card">
+        <img src="{% static 'icons/avaliacoes.svg' %}" alt="Avaliações" />
+        <h3>Avaliações</h3>
+        <p>Registre e consulte avaliações clínicas.</p>
+        <a href="/avaliacoes/">Acessar</a>
+    </div>
+
+    <div class="dashboard-card">
+        <img src="{% static 'icons/evolucoes.svg' %}" alt="Evoluções" />
+        <h3>Evoluções</h3>
+        <p>Acompanhe o progresso dos atendimentos.</p>
+        <a href="/evolucoes/">Acessar</a>
+    </div>
+
+    <div class="dashboard-card">
+        <img src="{% static 'icons/formularios.svg' %}" alt="Formulários" />
+        <h3>Formulários</h3>
+        <p>Crie ou edite seus próprios formulários.</p>
+        <a href="/formularios/">Acessar</a>
+    </div>
+</div>
+{% endblock %}
