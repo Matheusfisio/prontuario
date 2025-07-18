@@ -1,0 +1,436 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block page_title %}Nova Avaliação{% endblock %}
+
+{% block content %}
+
+<style>
+    input[type=range].custom-range::-webkit-slider-runnable-track {
+      background: linear-gradient(to right, green, yellow, orange, red);
+      height: 10px;
+      border-radius: 5px;
+    }
+    input[type=range].custom-range::-moz-range-track {
+      background: linear-gradient(to right, green, yellow, orange, red);
+      height: 10px;
+      border-radius: 5px;
+    }
+    
+    input[type=range].custom-range-invertida::-webkit-slider-runnable-track {
+      background: linear-gradient(to right, red, orange, yellow, green);
+      height: 10px;
+      border-radius: 5px;
+    }
+    input[type=range].custom-range-invertida::-moz-range-track {
+      background: linear-gradient(to right, red, orange, yellow, green);
+      height: 10px;
+      border-radius: 5px;
+    }
+
+    input[type=range].custom-range::-webkit-slider-runnable-track {
+  background: linear-gradient(to right, green, yellow, orange, red);
+  height: 10px;
+  border-radius: 5px;
+}
+    input[type=range].custom-range-invertida::-webkit-slider-runnable-track {
+  background: linear-gradient(to right, red, orange, yellow, green);
+  height: 10px;
+  border-radius: 5px;
+    }
+    .range-wrapper {
+  position: relative;
+  width: 100%;
+    }
+    .range-value {
+  position: absolute;
+  top: -25px;
+  transform: translateX(-50%);
+  background: #f0f0f0;
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-size: 0.85rem;
+  font-weight: bold;
+    }
+
+    </style>
+
+<script>
+    function updateLabel(rangeInput, labelId) {
+      const label = document.getElementById(labelId);
+      const value = rangeInput.value;
+      const min = rangeInput.min;
+      const max = rangeInput.max;
+    
+      const percent = (value - min) / (max - min);
+      const offset = percent * rangeInput.offsetWidth;
+    
+      label.textContent = value;
+      label.style.left = `${offset}px`;
+    }
+    window.addEventListener("load", () => {
+      updateLabel(document.getElementById('eva_dor'), 'valor_eva');
+      updateLabel(document.getElementById('sono_qualidade'), 'valor_sono');
+    });
+
+    
+    function addDinamometria() {
+        const container = document.getElementById("dinamometria-container");
+        const entry = container.querySelector(".dinamo-entry").cloneNode(true);
+        entry.querySelectorAll("input, select").forEach(el => el.value = "");
+        container.appendChild(entry);
+    }
+
+    function addForca() {
+        const container = document.getElementById("forca-container");
+        const entry = container.querySelector(".forca-entry").cloneNode(true);
+        entry.querySelectorAll("input, select").forEach(el => el.value = "");
+        container.appendChild(entry);
+    }
+
+    function addADM() {
+        const container = document.getElementById("adm-container");
+        const entry = container.querySelector(".adm-entry").cloneNode(true);
+        entry.querySelectorAll("input, select").forEach(el => el.value = "");
+        container.appendChild(entry);
+}
+
+    </script>
+    
+<div class="container mt-4">
+    
+    <hr>
+  
+    <div class="mb-4">
+      <strong>Paciente:</strong> {{ paciente.nome }} <br>
+      <strong>Idade:</strong> {{ paciente.idade }} anos <br>
+      <strong>Diagnóstico:</strong> {{ paciente.diagnostico }}
+    </div>
+  
+    <form method="post">
+      {% csrf_token %}
+  
+      <h4>I. Anamnese Ortopédica</h4>
+      <hr>
+  
+      <h5>1. Identificação</h5>
+      <div class="mb-3">
+        <label>Mão dominante:</label>
+        <input type="text" name="mao_dominante" class="form-control">
+      </div>
+      <div class="mb-3">
+        <label>Prática de esportes/atividades físicas:</label>
+        <input type="text" name="esportes" class="form-control">
+      </div>
+  
+      <h5>2. Motivo da Consulta</h5>
+      <div class="mb-3">
+        <label>Queixa principal:</label>
+        <input type="text" name="queixa" class="form-control">
+      </div>
+      <div class="mb-3">
+        <label>Início dos sintomas:</label>
+        <input type="text" name="inicio_sintomas" class="form-control">
+      </div>
+      <div class="mb-3">
+        <label>Localização e irradiação da dor:</label>
+        <input type="text" name="local_dor" class="form-control">
+      </div>
+      <div class="mb-3">
+        <label>Características da dor:</label>
+        <input type="text" name="caracteristicas_dor" class="form-control">
+      </div>
+      <div class="mb-4 position-relative">
+        <label for="eva_dor"><strong>Intensidade da Dor (EVA 0–10):</strong></label>
+        <div class="d-flex justify-content-between px-1 mb-1" style="font-size: 0.85rem;">
+          <span>0</span>
+          <span>5</span>
+          <span>10</span>
+        </div>
+        <div class="range-wrapper">
+          <input type="range" name="intensidade_dor" min="0" max="10" value="0" id="eva_dor" class="form-range custom-range" oninput="updateLabel(this, 'valor_eva')">
+          <div id="valor_eva" class="range-value">0</div>
+        </div>
+      </div>
+      
+      <div class="mb-3">
+        <label>Fatores agravantes e aliviantes:</label>
+        <textarea name="fatores" class="form-control"></textarea>
+      </div>
+  
+      <h5>3. Histórico do Problema Atual</h5>
+      <div class="mb-3">
+        <label>Data de início:</label>
+        <input type="text" name="data_inicio" class="form-control">
+      </div>
+      <div class="mb-3">
+        <label>Mecanismo da lesão:</label>
+        <input type="text" name="mecanismo_lesao" class="form-control">
+      </div>
+      <div class="mb-3">
+        <label>Progressão dos sintomas:</label>
+        <input type="text" name="progresso" class="form-control">
+      </div>
+      <div class="mb-3">
+        <label>Tratamentos anteriores:</label>
+        <textarea name="tratamentos_anteriores" class="form-control"></textarea>
+      </div>
+      <div class="mb-3">
+        <label>Diagnóstico médico:</label>
+        <input type="text" name="diagnostico_medico" class="form-control">
+      </div>
+  
+      <h5>4. Histórico Pessoal e Familiar</h5>
+      <div class="mb-3">
+        <label>Lesões ou cirurgias anteriores:</label>
+        <textarea name="lesoes_anteriores" class="form-control"></textarea>
+      </div>
+      <div class="mb-3">
+        <label>Doenças crônicas:</label>
+        <input type="text" name="doencas_cronicas" class="form-control">
+      </div>
+      <div class="mb-3">
+        <label>História familiar de doenças ortopédicas:</label>
+        <textarea name="historico_familiar" class="form-control"></textarea>
+      </div>
+  
+      <h5>5. Medicamentos e Alergias</h5>
+      <div class="mb-3">
+        <label>Medicamentos atuais:</label>
+        <input type="text" name="medicamentos" class="form-control">
+      </div>
+      <div class="mb-3">
+        <label>Alergias:</label>
+        <input type="text" name="alergias" class="form-control">
+      </div>
+  
+      <h5>6. Qualidade de Vida e Função</h5>
+      <div class="mb-3">
+        <label>Limitações nas AVDs:</label>
+        <textarea name="limitacoes" class="form-control"></textarea>
+      </div>
+      <div class="mb-3">
+        <label>Interferência no sono:</label>
+        <input type="text" name="sono" class="form-control">
+      </div>
+      <div class="mb-4 position-relative">
+        <label for="sono_qualidade"><strong>Qualidade do Sono (0–10):</strong></label>
+        <div class="d-flex justify-content-between px-1 mb-1" style="font-size: 0.85rem;">
+          <span>0</span>
+          <span>5</span>
+          <span>10</span>
+        </div>
+        <div class="range-wrapper">
+          <input type="range" name="qualidade_sono" min="0" max="10" value="0" id="sono_qualidade" class="form-range custom-range-invertida" oninput="updateLabel(this, 'valor_sono')">
+          <div id="valor_sono" class="range-value">0</div>
+        </div>
+      </div>
+      
+      <div class="mb-3">
+        <label>Alterações emocionais:</label>
+        <textarea name="emocional" class="form-control"></textarea>
+      </div>
+      <div class="mb-3">
+        <label>Objetivos com a fisioterapia:</label>
+        <textarea name="objetivos" class="form-control"></textarea>
+      </div>
+  
+      <h4 class="mt-4">II. Avaliação Física e Funcional</h4>
+      <hr>
+  
+      <h5>1. Inspeção</h5>
+      <textarea name="inspecao" class="form-control mb-3"></textarea>
+  
+      <h5>2. Palpação</h5>
+      <textarea name="palpacao" class="form-control mb-3"></textarea>
+  
+      <div id="adm-container">
+        <label><strong>Amplitude de Movimento (graus)</strong></label>
+        <div class="adm-entry mb-3">
+          <select name="adm_articulacao[]" class="form-select" required>
+            <option value="" disabled selected>Articulação</option>
+            <!-- Membro Superior -->
+            <option value="ombro">Ombro</option>
+            <option value="cotovelo">Cotovelo</option>
+            <option value="punho">Punho</option>
+            <option value="dedo">Dedo</option>
+
+            <!-- Membro Inferior -->
+            <option value="quadril">Quadril</option>
+            <option value="joelho">Joelho</option>
+            <option value="tornozelo">Tornozelo</option>
+            <option value="pe">Pé</option>
+            <option value="dedo_pe">Dedo do Pé</option>
+
+            <!-- Coluna Vertebral -->
+            <option value="cervical">Coluna Cervical</option>
+            <option value="toracica">Coluna Torácica</option>
+            <option value="lombar">Coluna Lombar</option>
+
+            <!-- outras -->
+          </select>
+          <select name="adm_movimento[]" class="form-select mt-1" required>
+            <option value="" disabled selected>Movimento</option>
+            <option value="flexao">Flexão</option>
+            <option value="extensao">Extensão</option>
+            <option value="abducao">Abdução</option>
+            <option value="aducao">Adução</option>
+            <option value="rotacao_interna">Rotação Interna</option>
+            <option value="rotacao_externa">Rotação Externa</option>
+
+            <!-- Ombro -->
+            <option value="elevacao_escapular">Elevação escapular</option>
+            <option value="retracao_escapular">Retração escapular</option>
+
+            <!-- Cotovelo e Punho -->
+            <option value="pronacao">Pronação</option>
+            <option value="supinacao">Supinação</option>
+            <option value="desvioulnar">Desvio Ulnar</option>
+            <option value="desviradial">Desvio Radial</option>
+
+            <!-- Quadril -->
+            <option value="circunducao">Circundução</option>
+
+            <!-- Tornozelo e Pé -->
+            <option value="inversao">Inversão</option>
+            <option value="eversao">Eversão</option>
+            <option value="flexao_dorsal">Flexão Dorsal</option>
+            <option value="flexao_plantar">Flexão Plantar</option>
+
+            <!-- Coluna -->
+            <option value="inclinacao_lateral">Inclinação Lateral</option>
+            <option value="rotacao_axial">Rotação Axial</option>
+            <option value="flexao_lateral">Flexão Lateral</option>
+
+            <!-- Dedos -->
+            <option value="oposicao">Oposição</option>
+            <option value="abducao_dedos">Abdução dos dedos</option>
+            <option value="aducao_dedos">Adução dos dedos</option>
+            <option value="extensao_dedos">Extensão dos dedos</option>
+            <option value="flexao_dedos">Flexão dos dedos</option>
+            <!-- outras -->
+          </select>
+
+          <select name="forca_lado[]" class="form-select mt-1" required>
+            <option value="" disabled selected>Lado</option>
+            <option value="D">Direito</option>
+            <option value="E">Esquerdo</option>
+          </select>
+
+          <select name="adm_tipo[]" class="form-select mt-1" required>
+            <option value="ativa">Ativa</option>
+            <option value="passiva">Passiva</option>
+          </select>
+          <input type="number" name="adm_valor[]" placeholder="Valor (°)" class="form-control mt-1" required>
+        </div>
+      </div>
+      <button type="button" class="btn btn-sm btn-secondary mb-3" onclick="addADM()">+ Adicionar ADM</button>
+      
+      <div id="dinamometria-container">
+        <label><strong>Dinamometria (kgf)</strong></label>
+        <div class="dinamo-entry mb-3">
+          <select name="dinamo_articulacao[]" class="form-select" required>
+            <option value="" disabled selected>Articulação</option>
+            <!-- Membro Superior -->
+            <option value="ombro">Ombro</option>
+            <option value="cotovelo">Cotovelo</option>
+            <option value="punho">Punho</option>
+            <option value="dedo">Dedo</option>
+
+            <!-- Membro Inferior -->
+            <option value="quadril">Quadril</option>
+            <option value="joelho">Joelho</option>
+            <option value="tornozelo">Tornozelo</option>
+            <option value="pe">Pé</option>
+            <option value="dedo_pe">Dedo do Pé</option>
+
+            <!-- Coluna Vertebral -->
+            <option value="cervical">Coluna Cervical</option>
+            <option value="toracica">Coluna Torácica</option>
+            <option value="lombar">Coluna Lombar</option>
+
+          </select>
+          <select name="dinamo_movimento[]" class="form-select mt-1" required>
+            <option value="" disabled selected>Movimento</option>
+            <!-- Comuns a várias articulações -->
+            <option value="flexao">Flexão</option>
+            <option value="extensao">Extensão</option>
+            <option value="abducao">Abdução</option>
+            <option value="aducao">Adução</option>
+            <option value="rotacao_interna">Rotação Interna</option>
+            <option value="rotacao_externa">Rotação Externa</option>
+
+            <!-- Ombro -->
+            <option value="elevacao_escapular">Elevação escapular</option>
+            <option value="retracao_escapular">Retração escapular</option>
+
+            <!-- Cotovelo e Punho -->
+            <option value="pronacao">Pronação</option>
+            <option value="supinacao">Supinação</option>
+            <option value="desvioulnar">Desvio Ulnar</option>
+            <option value="desviradial">Desvio Radial</option>
+
+            <!-- Quadril -->
+            <option value="circunducao">Circundução</option>
+
+            <!-- Tornozelo e Pé -->
+            <option value="inversao">Inversão</option>
+            <option value="eversao">Eversão</option>
+            <option value="flexao_dorsal">Flexão Dorsal</option>
+            <option value="flexao_plantar">Flexão Plantar</option>
+
+            <!-- Coluna -->
+            <option value="inclinacao_lateral">Inclinação Lateral</option>
+            <option value="rotacao_axial">Rotação Axial</option>
+            <option value="flexao_lateral">Flexão Lateral</option>
+
+            <!-- Dedos -->
+            <option value="oposicao">Oposição</option>
+            <option value="abducao_dedos">Abdução dos dedos</option>
+            <option value="aducao_dedos">Adução dos dedos</option>
+            <option value="extensao_dedos">Extensão dos dedos</option>
+            <option value="flexao_dedos">Flexão dos dedos</option>
+
+          </select>
+
+          <select name="forca_lado[]" class="form-select mt-1" required>
+            <option value="" disabled selected>Lado</option>
+            <option value="D">Direito</option>
+            <option value="E">Esquerdo</option>
+          </select>
+
+
+          <input type="number" name="dinamo_valor[]" class="form-control mt-1" placeholder="Valor (kgf)" required>
+        </div>
+      </div>
+      <button type="button" class="btn btn-sm btn-secondary mb-3" onclick="addDinamometria()">+ Adicionar</button>
+      
+  
+      <div id="forca-container">
+        <label><strong>Força Muscular (Escala 0–5)</strong></label>
+        <div class="forca-entry mb-3">
+          <input type="text" name="forca_regiao[]" class="form-control" placeholder="Região avaliada" required>
+          <select name="forca_lado[]" class="form-select mt-1" required>
+            <option value="" disabled selected>Lado</option>
+            <option value="D">Direito</option>
+            <option value="E">Esquerdo</option>
+          </select>
+          <input type="number" name="forca_valor[]" class="form-control mt-1" min="0" max="5" placeholder="Grau (0–5)" required>
+        </div>
+      </div>
+      <button type="button" class="btn btn-sm btn-secondary mb-3" onclick="addForca()">+ Adicionar Força</button>
+      
+  
+      <h5>5. Testes Especiais</h5>
+      <textarea name="testes_especiais" class="form-control mb-3"></textarea>
+  
+      <h5>6. Avaliação da Marcha</h5>
+      <textarea name="marcha" class="form-control mb-3"></textarea>
+  
+      <h5>7. Avaliação Funcional Global</h5>
+      <textarea name="funcional" class="form-control mb-3"></textarea>
+  
+      <button type="submit" class="btn btn-success mt-3">Salvar Avaliação</button>
+    </form>
+  </div>
+  {% endblock %}

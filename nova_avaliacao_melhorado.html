@@ -1,0 +1,138 @@
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2 class="mb-4">Nova Avaliação Ortopédica</h2>
+
+  <!-- Informações do Paciente -->
+  <div class="card mb-4">
+    <div class="card-header"><strong>Informações do Paciente</strong></div>
+    <div class="card-body">
+      <p><strong>Nome:</strong> {{ paciente.nome }}</p>
+      <p><strong>Idade:</strong> {{ paciente.idade }}</p>
+      <p><strong>Diagnóstico:</strong> {{ paciente.diagnostico }}</p>
+    </div>
+  </div>
+
+  <form method="post">
+    {% csrf_token %}
+
+    <!-- Anamnese Subjetiva -->
+    <div class="card mb-4">
+      <div class="card-header"><strong>I. Anamnese Subjetiva</strong></div>
+      <div class="card-body">
+        <div class="form-group">
+          <label for="queixa_principal">Queixa Principal</label>
+          <textarea class="form-control" name="queixa_principal" rows="2"></textarea>
+        </div>
+
+        <div class="form-group mt-3">
+          <label for="inicio_sintomas">Início dos Sintomas</label>
+          <input type="text" class="form-control" name="inicio_sintomas" placeholder="Gradual ou repentino">
+        </div>
+
+        <div class="form-group mt-3">
+          <label for="local_dor">Localização da Dor</label>
+          <input type="text" class="form-control" name="local_dor">
+        </div>
+
+        <div class="form-group mt-3">
+          <label for="irradiacao">Irradiação da Dor</label>
+          <input type="text" class="form-control" name="irradiacao">
+        </div>
+
+        <div class="form-group mt-4">
+          <label for="intensidade_dor">Intensidade da Dor (EVA)</label>
+          <div class="d-flex justify-content-between">
+            <small>0</small><small>5</small><small>10</small>
+          </div>
+          <input type="range" class="form-range" min="0" max="10" name="intensidade_dor" id="intensidade_dor" 
+            style="width:100%; background: linear-gradient(to right, green, yellow, red);">
+          <div id="valor_dor" class="text-center mt-1">5</div>
+        </div>
+
+        <div class="form-group mt-4">
+          <label for="qualidade_sono">Qualidade do Sono</label>
+          <div class="d-flex justify-content-between">
+            <small>Ruim</small><small>Média</small><small>Boa</small>
+          </div>
+          <input type="range" class="form-range" min="0" max="10" name="qualidade_sono" id="qualidade_sono" 
+            style="width:100%; background: linear-gradient(to right, red, yellow, green);">
+          <div id="valor_sono" class="text-center mt-1">5</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ADM, Força Muscular, Dinamometria -->
+    <div class="card mb-4">
+      <div class="card-header"><strong>II. Avaliação Objetiva</strong></div>
+      <div class="card-body">
+        <h5>Amplitude de Movimento (ADM)</h5>
+        <div class="row mb-3">
+          <div class="col-md-4">
+            <label>Articulação</label>
+            <select class="form-control" name="adm_articulacao">
+              <option>Ombro</option>
+              <option>Cotovelo</option>
+              <option>Punho</option>
+              <option>Quadril</option>
+              <option>Joelho</option>
+              <option>Tornozelo</option>
+              <option>Coluna Cervical</option>
+              <option>Coluna Lombar</option>
+            </select>
+          </div>
+          <div class="col-md-4">
+            <label>Movimento</label>
+            <input type="text" class="form-control" name="adm_movimento" placeholder="Ex: Flexão">
+          </div>
+          <div class="col-md-4">
+            <label>Valor (graus)</label>
+            <input type="number" class="form-control" name="adm_valor" step="1">
+          </div>
+        </div>
+
+        <h5 class="mt-4">Dinamometria</h5>
+        <div class="row mb-3">
+          <div class="col-md-4">
+            <label>Articulação</label>
+            <select class="form-control" name="dinam_articulacao">
+              <option>Ombro</option>
+              <option>Cotovelo</option>
+              <option>Quadril</option>
+              <option>Joelho</option>
+            </select>
+          </div>
+          <div class="col-md-4">
+            <label>Movimento</label>
+            <input type="text" class="form-control" name="dinam_movimento">
+          </div>
+          <div class="col-md-4">
+            <label>Valor (kgf)</label>
+            <input type="number" class="form-control" name="dinam_valor" step="0.1">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Salvar Avaliação</button>
+    <a href="{% url 'avaliacoes:avaliacoes_inicio' %}" class="btn btn-secondary">Cancelar</a>
+  </form>
+</div>
+
+<script>
+  const dor = document.getElementById('intensidade_dor');
+  const dor_val = document.getElementById('valor_dor');
+  dor.addEventListener('input', () => {
+    dor_val.textContent = dor.value;
+  });
+
+  const sono = document.getElementById('qualidade_sono');
+  const sono_val = document.getElementById('valor_sono');
+  sono.addEventListener('input', () => {
+    sono_val.textContent = sono.value;
+  });
+</script>
+{% endblock %}

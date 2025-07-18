@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="dashboard-wrapper" style="display: flex; gap: 20px;">
+
+  <!-- Cards -->
+  <div style="flex: 2;">
+    <div class="dashboard-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+      <div class="dashboard-card">
+        <img src="{% static 'icons/pacientes.svg' %}" alt="Pacientes" />
+        <h3>Pacientes</h3>
+        <p>Gerencie todos os pacientes cadastrados.</p>
+        <a href="/pacientes/">Acessar</a>
+      </div>
+      <div class="dashboard-card">
+        <img src="{% static 'icons/avaliacoes.svg' %}" alt="Avaliações" />
+        <h3>Avaliações</h3>
+        <p>Registre e consulte avaliações clínicas.</p>
+        <a href="/avaliacoes/">Acessar</a>
+      </div>
+      <div class="dashboard-card">
+        <img src="{% static 'icons/evolucoes.svg' %}" alt="Evoluções" />
+        <h3>Evoluções</h3>
+        <p>Acompanhe o progresso dos atendimentos.</p>
+        <a href="/evolucoes/">Acessar</a>
+      </div>
+      <div class="dashboard-card">
+        <img src="{% static 'icons/formularios.svg' %}" alt="Formulários" />
+        <h3>Formulários</h3>
+        <p>Crie ou edite seus próprios formulários.</p>
+        <a href="/formularios/">Acessar</a>
+      </div>
+      <div class="dashboard-card">
+        <img src="{% static 'icons/agenda.svg' %}" alt="Agenda" />
+        <h3>Agenda</h3>
+        <p>Visualize e gerencie seus agendamentos.</p>
+        <a href="/agendamentos/">Acessar</a>
+      </div>
+      
+    </div>
+  </div>
+
+  <!-- Agenda -->
+  <div style="flex: 1;">
+    <div style="background: #f8f8f8; border-radius: 12px; padding: 20px;">
+      <h3 class="text-center" style="color: #198754;">Agenda do Mês</h3>
+      <div id="calendar"></div>
+      <h5 class="mt-3 text-center">Horários</h5>
+      <ul id="horarios" class="list-group mt-2"></ul>
+    </div>
+  </div>
+
+</div>
+
+<!-- FULLCALENDAR + SCRIPT -->
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const calendarEl = document.getElementById('calendar');
+    const horariosEl = document.getElementById('horarios');
+
+    const calendar = new FullCalendar.Calendar(calendarEl, {
+      initialView: 'dayGridMonth',
+      locale: 'pt-br',
+      height: 'auto',
+      events: '/agendamentos/eventos/',
+      dateClick: function (info) {
+        fetch(`/agendamentos/horarios/?data=${info.dateStr}`)
+          .then(response => response.json())
+          .then(data => {
+            horariosEl.innerHTML = '';
+            if (data.horarios.length === 0) {
+              const li = document.createElement('li');
+              li.className = 'list-group-item text-center';
+              li.innerHTML = '<em>Sem agendamentos. Clique para criar.</em>';
+              li.style.cursor = 'pointer';
+              li.onclick = () => {
+                window.location.href = `/agendamentos/novo/?data=${info.dateStr}`;
+              };
+              horariosEl.appendChild(li);
+            } else {
+              data.horarios.forEach(h => {
+                const li = document.createElement('li');
+                li.className = 'list-group-item';
+                li.textContent = h;
+                horariosEl.appendChild(li);
+              });
+            }
+          });
+      }
+    });
+
+    calendar.render();
+  });
+</script>
+{% endblock %}

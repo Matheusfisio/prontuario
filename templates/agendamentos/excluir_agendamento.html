@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+    <h2>Excluir Agendamento</h2>
+    <p>Tem certeza de que deseja excluir o agendamento de <strong>{{ agendamento.paciente.nome }}</strong> em <strong>{{ agendamento.data }}</strong>?</p>
+    <form method="post" action="{% url 'agendamentos:excluir_agendamento' agendamento.id %}">
+        {% csrf_token %}
+        <p>Tem certeza que deseja excluir o agendamento de {{ agendamento.paciente }}?</p>
+        <button type="submit" class="btn btn-danger">Confirmar Exclusão</button>
+        <a href="{% url 'agendamentos:agenda_inicio' %}" class="btn btn-secondary">Cancelar</a>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %}Selecionar Paciente{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2 class="mb-4">Selecionar Paciente para Avaliação</h2>
+
+  <input type="text" id="searchInput" class="form-control mb-3" placeholder="Buscar paciente...">
+
+  <table class="table table-bordered table-hover">
+    <thead class="table-light">
+      <tr>
+        <th>Nome do Paciente</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody id="patientTable">
+      {% for paciente in pacientes %}
+      <tr>
+        <td>{{ paciente.nome }}</td>
+        <td>
+          <a href="{% url 'avaliacoes:nova_avaliacao' paciente.id %}" class="btn btn-sm btn-primary">
+            Nova Avaliação
+          </a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<script>
+  document.getElementById("searchInput").addEventListener("keyup", function () {
+    let input = this.value.toLowerCase();
+    let rows = document.querySelectorAll("#patientTable tr");
+
+    rows.forEach(function (row) {
+      let nome = row.cells[0].textContent.toLowerCase();
+      row.style.display = nome.includes(input) ? "" : "none";
+    });
+  });
+</script>
+{% endblock %}
